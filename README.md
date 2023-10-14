@@ -1,5 +1,5 @@
-# cs-server-runner
-
+# CS2 Server Management Service (CS2SMS)
+REST HTTP API based monolithic service for CS2 server management
 
 ## installation
 I suggest pyenv for running to avoid library conflicts, but you can do whatever
@@ -34,5 +34,5 @@ to setup with vscode or pycharm, change interpreter to
 ~/.pyenv/versions/3.11.4/envs/cs-server-service-bin/python
 ```
 
-### requirements
+### installing python requirements
 TODO

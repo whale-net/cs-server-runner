@@ -20,3 +20,8 @@ giford/_version.py
 
 # code coverage
 .coverage
+
+# ignore local environment
+.env
+
+*.log
