@@ -2,6 +2,7 @@ import logging
 
 
 from cs2_server_management_service.config_manager import ConfigManager
+
 # TODO - temp for building this out
 from cs2_server_management_service.steamcmd import SteamCMD
 
@@ -21,11 +22,11 @@ def run_service():
     steamcmd.update_or_install(730)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     # TODO - is there a way to pickup stdout?
     # steamcmd subprocess info should be logged ideally
     from logging.config import fileConfig
-    fileConfig('logging.ini', disable_existing_loggers=False)
+
+    fileConfig("logging.ini", disable_existing_loggers=False)
 
     run_service()
