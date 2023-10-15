@@ -3,6 +3,7 @@ import logging
 import uvicorn
 
 from cs2_server_management_service.config_manager import ConfigManager
+from cs2_server_management_service.communication import CommunicationHandler
 from cs2_server_management_service.thread_util import NamedThreadPool
 from cs2_server_management_service.server_manager import ServerManager
 
@@ -12,10 +13,9 @@ logger = logging.getLogger(__name__)
 def main():
     logger.info("starting service")
 
-    # creat config manager here, does nothing, but initializes before spawning other threads
-    # not really sure this is thread safe other wise
-    # need singleton lock
-    cm = ConfigManager()
+    # init singleton classes to avoid anything weird
+    ConfigManager()
+    CommunicationHandler()
 
     with NamedThreadPool() as threadpool:
         threadpool.submit(run_api, "api")

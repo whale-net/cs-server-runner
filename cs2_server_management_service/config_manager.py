@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConfigManager:
+    # TODO - this is't really threadsafe but probably is fine if init in main thread
     _instance: "ConfigManager" = None
 
     DEFAULT_CS_PORT: int = 27015

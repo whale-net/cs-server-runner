@@ -3,7 +3,8 @@ import logging
 import uuid
 from collections import deque
 
-from cs2_server_management_service.message import Message, Response
+from .message import Message
+from .response import Response
 from cs2_server_management_service.thread_util import raii_acquire_release, NamedLock
 
 logger = logging.getLogger(__name__)
@@ -70,29 +71,3 @@ class CommunicationQueue:
                 self._outgoing.popleft() for _ in range(num_responses_to_return)
             ]
             return return_responses
-
-
-class CommunicationHandler:
-    _instance: "CommunicationHandler"
-
-    def __init__(self):
-        pass
-
-    def __new__(
-        cls,
-    ):
-        # singleton
-        # not thread safe, but if i create once in service entrypoint then we should be safe
-        if cls._instance is None:
-            logger.info("creating MessageQueue singleton")
-
-            # need to instantiate this way to avoid recursion
-            cls._instance = super(CommunicationHandler, cls).__new__(cls)
-
-            # create communication queues for each message source
-            #
-            cls._instance._queues: dict[MessageSource, CommunicationQueue] = {
-                msg_src: CommunicationQueue() for msg_src in MessageSource
-            }
-
-        return cls._instance

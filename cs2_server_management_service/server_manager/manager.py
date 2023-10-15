@@ -2,7 +2,12 @@ import logging
 import time
 
 from .server import CounterStrike2Server
-from ..message import Message, MessageType, Response, ResponseStatus
+from cs2_server_management_service.communication import (
+    Message,
+    MessageType,
+    Response,
+    ResponseStatus,
+)
 
 logger = logging.getLogger(__name__)
 
