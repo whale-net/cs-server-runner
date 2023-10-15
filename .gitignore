@@ -28,6 +28,9 @@ giford/_version.py
 config.json
 .env
 
+# ignore server files
+server_files/*
+
 
 # ignore log files
 *.log

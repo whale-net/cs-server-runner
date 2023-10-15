@@ -32,10 +32,10 @@ class SteamCMD:
         stdin_args: list[str] = []
 
         steamcmd_args.append("+force_install_dir")
-        steamcmd_args.append(f'"{install_dir}"')
+        steamcmd_args.append(install_dir)
 
         steamcmd_args.append("+login")
-        steamcmd_args.append(f"{self._config_manager.steam_username}")
+        steamcmd_args.append(self._config_manager.steam_username)
         # password must run via stdin
         stdin_args.append(self._config_manager.steam_password)
 
