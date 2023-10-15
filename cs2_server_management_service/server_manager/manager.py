@@ -16,6 +16,7 @@ class ServerManager:
     def create_server(self):
         logger.info("creating server")
         server = CounterStrike2Server()
+        server.run()
         self._servers.append(server)
         logger.info("server created")
 

@@ -14,16 +14,14 @@ class SteamCMD:
         self._steamcmd = self._config_manager.steamcmd_executable
         logger.info(f"using steamcmd executable: {self._steamcmd}")
 
-    def update_or_install(self, app_id: int):
+    def update_or_install(self, app_id: int, installation_name: str):
         """
         updates or install provided app_id
         limited to a single server per app_id
 
         :param app_id: steam app_id
         """
-        install_dir = os.path.join(
-            self._config_manager.server_install_directory, str(app_id)
-        )
+        install_dir = self._config_manager.get_game_install_path(installation_name)
         if not os.path.exists(install_dir):
             os.makedirs(install_dir)
 

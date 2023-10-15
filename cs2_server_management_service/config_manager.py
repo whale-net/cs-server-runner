@@ -24,7 +24,7 @@ class ConfigManager:
 
     @property
     def cs_server_port(self) -> int:
-        return self.cs_server_port
+        return self._cs_server_port
 
     @property
     def steamcmd_executable(self) -> str:
@@ -159,3 +159,6 @@ class ConfigManager:
             default=None,
         )
         return parser
+
+    def get_game_install_path(self, installation_name: str) -> str:
+        return os.path.join(self.server_install_directory, installation_name)

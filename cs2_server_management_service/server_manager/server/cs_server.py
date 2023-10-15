@@ -1,6 +1,9 @@
 import datetime
 import logging
+import subprocess
+import os
 
+from cs2_server_management_service.config_manager import ConfigManager
 from cs2_server_management_service.steamcmd import SteamCMD
 
 logger = logging.getLogger(__name__)
@@ -27,6 +30,12 @@ class CounterStrike2Server:
 
     def __init__(self) -> None:
         self._last_update_run: datetime.datetime = datetime.datetime.utcfromtimestamp(0)
+        self._config_manager = ConfigManager()
+        self._installation_path = self._config_manager.get_game_install_path(self.name)
+
+        self._executable_path = os.path.join(
+            self._installation_path, "game/bin/linuxsteamrt64/cs2"
+        )
         pass
 
     @property
@@ -35,19 +44,29 @@ class CounterStrike2Server:
 
     @property
     def name(self) -> str:
-        return "cs_server"
+        return "cs2"
 
     def run(self):
         self.update_or_install()
 
-        pass
+        command: list[str] = [self._executable_path, "-dedicated"]
+
+        command.append("-port")
+        command.append(str(self._config_manager.cs_server_port))
+
+        command.append("+map")
+        command.append("de_ancient")
+
+        logger.info(command)
+
+        self._proc = subprocess.Popen(command)
 
     def update_or_install(self):
         if self._last_update_run != datetime.datetime.utcfromtimestamp(0):
             logger.info("updating or installing server")
             # this will eventually have custom path support
             steamcmd = SteamCMD()
-            steamcmd.update_or_install(CounterStrike2Server.APP_ID)
+            steamcmd.update_or_install(CounterStrike2Server.APP_ID, self.name)
             self._last_update_run = datetime.datetime.now()
             logger.info("server updated/installed")
         else:
