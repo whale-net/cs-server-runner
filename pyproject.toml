@@ -11,6 +11,7 @@ version = "0.0.1" # todo - use setuptools
 #dynamic = ['version']
 dependencies = [
     'fastapi',
+    'uvicorn',
 ]
 
 [project.optional-dependencies]

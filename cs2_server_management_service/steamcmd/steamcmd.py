@@ -15,13 +15,19 @@ class SteamCMD:
         logger.info(f"using steamcmd executable: {self._steamcmd}")
 
     def update_or_install(self, app_id: int):
-        # install_dir is not full path, just path to
+        """
+        updates or install provided app_id
+        limited to a single server per app_id
+
+        :param app_id: steam app_id
+        """
         install_dir = os.path.join(
             self._config_manager.server_install_directory, str(app_id)
         )
         if not os.path.exists(install_dir):
             os.makedirs(install_dir)
 
+        # TODO this should be replaced with a generic command builder
         steamcmd_args: list[str] = []
         stdin_args: list[str] = []
 
@@ -32,6 +38,12 @@ class SteamCMD:
         steamcmd_args.append(f"{self._config_manager.steam_username}")
         # password must run via stdin
         stdin_args.append(self._config_manager.steam_password)
+
+        steamcmd_args.append("+app_update")
+        steamcmd_args.append(str(app_id))
+
+        # remember to exit, otherwise steamcmd will hang
+        steamcmd_args.append("+exit")
 
         self._exec(steamcmd_args, stdin_args)
 
@@ -47,7 +59,6 @@ class SteamCMD:
         stdin_command_string = "".join(arg + "\n" for arg in stdin_args)
         stdin_input: bytes = bytes(stdin_command_string, encoding="ascii")
 
-        proc = subprocess.run(subprocess_command)
-        # proc = subprocess.run(subprocess_command, input=stdin_input)
+        proc = subprocess.run(subprocess_command, input=stdin_input)
 
         logger.info("finished running steamcmd")
