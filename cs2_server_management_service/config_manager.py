@@ -34,6 +34,10 @@ class ConfigManager:
     def server_install_directory(self) -> str:
         return self._server_install_directory
 
+    @property
+    def skip_server_update(self) -> bool:
+        return self._skip_server_update
+
     def __init__(self):
         calling_function = inspect.stack()[1].function
         logger.info(f"ConfigManager accessed by {calling_function}")
@@ -44,7 +48,7 @@ class ConfigManager:
         # singleton
         # not thread safe, but if i create once in service entrypoint then we should be safe
         if cls._instance is None:
-            logger.info("creating singleton")
+            logger.info("creating ConfigManager singleton")
             # need to instantiate this way to avoid recursion
             cls._instance = super(ConfigManager, cls).__new__(cls)
 
@@ -88,6 +92,7 @@ class ConfigManager:
         self._instance._server_install_directory: str = (
             ConfigManager.DEFAULT_SERVER_INSTALL_DIRECTORY
         )
+        self._skip_server_update: bool = False
 
     # def _init_from_file(self, environment_file_path: str):
     #     if not os.path.exists(environment_file_path):
@@ -108,6 +113,7 @@ class ConfigManager:
 
         if args.steamcmd is not None:
             self._steamcmd_executable = args.steamcmd
+        self._skip_server_update = args.skip_server_update
 
         if args.server_install_directory is not None:
             self._server_install_directory = args.server_install_directory
@@ -158,6 +164,13 @@ class ConfigManager:
             nargs="?",
             default=None,
         )
+        parser.add_argument(
+            "--skip_server_update",
+            dest="skip_server_update",
+            help="skip steamcmd updates for servers",
+            action="store_true",
+        )
+
         return parser
 
     def get_game_install_path(self, installation_name: str) -> str:

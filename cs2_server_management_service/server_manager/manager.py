@@ -2,6 +2,7 @@ import logging
 import time
 
 from .server import CounterStrike2Server
+from ..message import Message, MessageType, Response, ResponseStatus
 
 logger = logging.getLogger(__name__)
 
@@ -13,17 +14,35 @@ class ServerManager:
         # TODO is_running bool
         pass
 
-    def create_server(self):
-        logger.info("creating server")
-        server = CounterStrike2Server()
-        server.run()
-        self._servers.append(server)
-        logger.info("server created")
+    def process_message(self, message: Message) -> Response:
+        logger.info("processing message %s", message)
+        if message.message_type == MessageType.START:
+            self._create_server()
+        elif message.message_type == MessageType.STOP:
+            self._shutdown_server()
+        elif message.message_type == MessageType.KILL:
+            self._kill_server()
+        elif message.message_type == MessageType.COMMAND:
+            self._send_command(message.message)
+        elif message.message_type == MessageType.HEALTH:
+            self.execute_healthcheck()
 
-    def shutdown_server(self):
+        return Response()  # TODO
+
+    def _create_server(self):
+        logger.info("creating cs2 server")
+        server = CounterStrike2Server()
+        server.start()
+        self._servers.append(server)
+        logger.info("cs2 server created")
+
+    def _shutdown_server(self):
         logger.info("shutting down server")
 
-    def send_command(self, command: str):
+    def _kill_server(self):
+        logger.info("killing down server")
+
+    def _send_command(self, command: str):
         logger.info(f"sending command to server: {command}")
 
     def execute_healthcheck(self):
@@ -64,7 +83,7 @@ class ServerManager:
 
             # TODO - read from command queue
             if len(self._servers) == 0:
-                self.create_server()
+                self._create_server()
 
             # don't know final shape just yet, so going to sleep and come back
             # likely need to not sleep for command input

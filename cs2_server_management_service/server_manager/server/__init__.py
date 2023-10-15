@@ -1,1 +1,1 @@
-from .cs_server import CounterStrike2Server
+from .cs2_server import CounterStrike2Server

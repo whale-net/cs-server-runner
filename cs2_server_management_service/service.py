@@ -18,7 +18,7 @@ def main():
     cm = ConfigManager()
 
     with NamedThreadPool() as threadpool:
-        # threadpool.submit(run_api, "api")
+        threadpool.submit(run_api, "api")
         threadpool.submit(run_cs_server_manager, "cs_server_manager")
 
     logger.info("service exiting")
