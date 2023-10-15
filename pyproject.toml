@@ -1,0 +1,32 @@
+[build-system]
+requires = ['setuptools', 'setuptools_scm[toml]>=6.2']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'cs2-server-management-service'
+authors = [{name = 'Alex Harding'}]
+requires-python = '>=3.11'
+description = 'monolithic service for cs2 game server management'
+version = "0.0.1" # todo - use setuptools
+#dynamic = ['version']
+dependencies = [
+    'fastapi',
+]
+
+[project.optional-dependencies]
+# TODO one day these should be split so dev doesn't require installing all of these
+lint = [
+    'black',
+]
+dev = [
+    'cs2-server-management-service[lint]',
+]
+
+
+[tool.setuptools.packages.find]
+where = ['.']
+include = ['cs2_server_management_service*']
+exclude = ['tests*']
+namespaces = false  # true by default, not sure why I set it to false though
+
+

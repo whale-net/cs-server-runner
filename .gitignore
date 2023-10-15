@@ -8,7 +8,7 @@
 local_test.py
 local_test_data/*
 local_test_output/*
-
+local_steamcmd/*
 
 # build stuff
 build/*
@@ -21,7 +21,13 @@ giford/_version.py
 # code coverage
 .coverage
 
+# ignore IDE (for now)
+.vscode/*
+
 # ignore local environment
+config.json
 .env
 
+
+# ignore log files
 *.log
