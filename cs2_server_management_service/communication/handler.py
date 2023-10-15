@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 class CommunicationHandler:
-    _instance: "CommunicationHandler"
+    _instance: "CommunicationHandler" = None
 
     def __init__(self):
         pass
@@ -24,7 +24,8 @@ class CommunicationHandler:
             # create communication queues for each message source
             #
             cls._instance._queues: dict[MessageSource, CommunicationQueue] = {
-                msg_src: CommunicationQueue() for msg_src in MessageSource
+                msg_src: CommunicationQueue() 
+                for msg_src in MessageSource
             }
 
         return cls._instance

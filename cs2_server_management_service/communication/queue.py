@@ -10,7 +10,7 @@ from cs2_server_management_service.thread_util import raii_acquire_release, Name
 logger = logging.getLogger(__name__)
 
 
-class MessageSource:
+class MessageSource(enum.Enum):
     API = 1
     ServerManager = 2
 
