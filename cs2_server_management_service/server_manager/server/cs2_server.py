@@ -112,3 +112,7 @@ class CounterStrike2Server:
             logger.info("server updated/installed")
         else:
             logger.info("CounterStrike2Server already updated")
+
+    def kill(self):
+        logger.info("killing %s o7", self.name)
+        self._proc.kill()

@@ -1,5 +1,10 @@
 from fastapi import APIRouter
-from cs2_server_management_service.config_manager import ConfigManager
+from cs2_server_management_service.communication import (
+    CommunicationHandler,
+    Message,
+    MessageSource,
+    MessageType,
+)
 
 router = APIRouter()
 
@@ -11,4 +16,8 @@ async def root() -> str:
 
 @router.get("/test")
 async def root() -> str:
-    return "hello world test"
+    msg = Message(MessageType.KILL, "kill from API")
+
+    cm = CommunicationHandler()
+    cm.add_message(MessageSource.ServerManager, msg)
+    return "hope it works"

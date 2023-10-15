@@ -51,7 +51,7 @@ class NamedThreadPool:
 
 class NamedLock:
     """
-    wrapper class that gives name to a threading.Lock
+    wrapper class that gives name to a threading.RLock
     """
 
     @property
@@ -63,7 +63,8 @@ class NamedLock:
         self._name: str = name
         logger.info("creating lock named %s", self.name)
 
-        self._lock: threading.Lock = threading.Lock()
+        # using RLock for ease
+        self._lock: threading.RLock = threading.RLock()
 
     # def acquire(self, blocking: bool = True, timeout: int = -1) -> bool
     def acquire(self) -> bool:
@@ -87,10 +88,10 @@ def raii_acquire_release(lock: NamedLock):
     :param lock: _description_
     """
 
-    logger.debug("acquring lock %s", lock)
+    # logger.debug("acquring lock %s", lock)
     lock.acquire()
-    logger.debug("lock acquired")
+    # logger.debug("lock acquired")
     yield
-    logger.debug("about to release lock")
+    # logger.debug("about to release lock")
     lock.release()
-    logger.debug("lock released %s", lock)
+    # logger.debug("lock released %s", lock)

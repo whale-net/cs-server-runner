@@ -10,9 +10,14 @@ from cs2_server_management_service.thread_util import raii_acquire_release, Name
 logger = logging.getLogger(__name__)
 
 
+# TODO rename
 class MessageSource(enum.Enum):
     API = 1
     ServerManager = 2
+
+
+class EmptyCommunicationQueueException(Exception):
+    pass
 
 
 class CommunicationQueue:
@@ -31,8 +36,8 @@ class CommunicationQueue:
     def __init__(self, name: str = str(uuid.uuid4())) -> None:
         self._name = name
 
-        self._incoming = deque[Message]
-        self._outgoing = deque[Response]
+        self._incoming: deque[Message] = deque()
+        self._outgoing: deque[Response] = deque()
 
         self._incoming_lock = NamedLock(f"{self.name}-incoming")
         self._outgoing_lock = NamedLock(f"{self.name}-outgoing")
@@ -42,12 +47,20 @@ class CommunicationQueue:
             self._incoming.append(message)
 
     def put_messages(self, messages: list[Message]):
+        # although underlying function will acquire lock
+        # acquire the lock again to ensure atomicity
         with raii_acquire_release(self._incoming_lock):
             for message in messages:
                 self.put_message(message)
 
-    def pop_messages(self, count: int = 1) -> list[Message]:
-        # batch processing by default
+    def pop_message(self) -> Message:
+        # don't need to acquire lock again
+        messages = self.pop_messages(count=1)
+        if len(messages) == 0:
+            raise EmptyCommunicationQueueException
+        return messages[0]
+
+    def pop_messages(self, count: int) -> list[Message]:
         with raii_acquire_release(self._incoming_lock):
             num_messages_to_return = min(count, len(self._incoming))
             return_messages = [

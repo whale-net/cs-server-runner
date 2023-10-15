@@ -41,7 +41,7 @@ class ConfigManager:
 
     def __init__(self):
         calling_function = inspect.stack()[1].function
-        logger.info(f"ConfigManager accessed by {calling_function}")
+        # logger.info(f"ConfigManager accessed by {calling_function}")
 
     def __new__(
         cls,
