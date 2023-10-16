@@ -89,7 +89,7 @@ class CounterStrike2Server:
 
         logger.info(command)
 
-        self.__proc = subprocess.Popen(command)
+        self.__proc = subprocess.Popen(command, stdin=subprocess.PIPE)
         self._last_run_start = datetime.datetime.now()
         logger.info("%s has been started", self.name)
 
@@ -115,4 +115,18 @@ class CounterStrike2Server:
 
     def kill(self):
         logger.info("killing %s o7", self.name)
+        # cs2 won't be killed in this way
         self._proc.kill()
+
+    def execute_command(self, command: str):
+        if len(command) == 0:
+            return
+        command = command + "\n"
+
+        logger.info("server %s about to execute command=%s", self.name, command)
+
+        command_bytes = bytes(command, encoding='ascii')
+        #self._proc.communicate(command_bytes)
+        # apparently this is wrong, but it's what I think I have to do
+        self._proc.stdin.write(command_bytes)
+        self._proc.stdin.flush()

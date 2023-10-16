@@ -143,7 +143,7 @@ class ConfigManager:
         parser.add_argument(
             "--env_file",
             dest="env_file",
-            help="overwrite default environment file",
+            help="overwrite default environment file location",
             type=str,
             nargs="?",
             default=None,

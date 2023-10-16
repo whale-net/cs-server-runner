@@ -63,13 +63,12 @@ class ServerManager:
         self._kill_server()
 
     def _kill_server(self):
-        logger.info("killing down server")
-
         for server in self._servers:
             server.kill()
 
     def _send_command(self, command: str):
-        logger.info(f"sending command to server: {command}")
+        for server in self._servers:
+            server.execute_command(command)
 
     def _execute_healthcheck(self):
         # check if any servers are dead
