@@ -15,9 +15,24 @@ async def root() -> CommonResponse:
     return CommonResponse(message="hello world")
 
 
-@router.get("/server/shutdown")
+@router.post("/server/shutdown")
 async def root() -> CommonResponse:
+    """
+    curl --request POST http://127.0.0.1:5000/server/shutdown
+    """
     msg = Message(MessageType.STOP, "stop from API")
+
+    cm = CommunicationHandler()
+    cm.add_message(MessageSource.ServerManager, msg)
+    return CommonResponse(message="OK")
+
+
+@router.post("/server/start")
+async def root() -> CommonResponse:
+    """
+    curl --request POST http://127.0.0.1:5000/server/start
+    """
+    msg = Message(MessageType.START, "starting server")
 
     cm = CommunicationHandler()
     cm.add_message(MessageSource.ServerManager, msg)

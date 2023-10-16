@@ -20,13 +20,9 @@ class CommandRequest:
     command: str
 
 
-# @dataclass
-from pydantic import BaseModel
-
-
-class MultiCommandRequest(BaseModel):
+@dataclass
+class MultiCommandRequest:
     commands: list[CommandRequest]
-    # commands: list[str]
 
 
 @router.post("/server/command")

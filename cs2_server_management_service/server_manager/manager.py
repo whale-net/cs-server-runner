@@ -52,6 +52,10 @@ class ServerManager:
         )
 
     def _create_server(self):
+        if len(self._servers) > 0:
+            logger.warning("unable to start server, server already exists")
+            return
+
         logger.info("creating cs2 server")
         server = CounterStrike2Server()
         server.start()
