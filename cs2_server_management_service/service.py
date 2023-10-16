@@ -32,6 +32,8 @@ def run_api():
         port=5000,
         log_level="info",
         log_config="logging.ini",
+        # use 127.0.0.1 for local development
+        host='0.0.0.0'
     )
     server = uvicorn.Server(config)
     server.run()
