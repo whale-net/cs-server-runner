@@ -125,8 +125,8 @@ class CounterStrike2Server:
 
         logger.info("server %s about to execute command=%s", self.name, command)
 
-        command_bytes = bytes(command, encoding='ascii')
-        #self._proc.communicate(command_bytes)
+        command_bytes = bytes(command, encoding="ascii")
+        # self._proc.communicate(command_bytes)
         # apparently this is wrong, but it's what I think I have to do
         self._proc.stdin.write(command_bytes)
         self._proc.stdin.flush()
