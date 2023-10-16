@@ -96,6 +96,7 @@ class ServerManager:
 
         # keep only healthy servers
         self._servers = healthy_servers
+        self._last_health_check = datetime.datetime.now()
 
     def shutdown(self):
         self._do_shutdown = True
@@ -108,7 +109,7 @@ class ServerManager:
         )
 
         no_message_count: int = 0
-        max_count: int = 50
+        max_count: int = 5000
         while not self._do_shutdown:
             current_time = datetime.datetime.now()
 
@@ -127,7 +128,7 @@ class ServerManager:
                 no_message_count = 0
 
             # submit health_check if it's been too long
-            if self._last_health_check - current_time > self._health_check_period:
+            if current_time - self._last_health_check > self._health_check_period:
                 health_message = Message(
                     MessageType.HEALTH, f"health_check:{current_time}"
                 )

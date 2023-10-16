@@ -5,28 +5,20 @@ from cs2_server_management_service.communication import (
     MessageSource,
     MessageType,
 )
+from ..common_response import CommonResponse
 
 router = APIRouter()
 
 
 @router.get("/")
-async def root() -> str:
-    return "hello world"
+async def root() -> CommonResponse:
+    return CommonResponse(message="hello world")
 
 
-@router.get("/server/kill")
-async def root() -> str:
-    msg = Message(MessageType.KILL, "kill from API")
-
-    cm = CommunicationHandler()
-    cm.add_message(MessageSource.ServerManager, msg)
-    return "hope it works"
-
-
-@router.get("/server/command")
-async def root() -> str:
-    msg = Message(MessageType.COMMAND, "say it worked!")
+@router.get("/server/shutdown")
+async def root() -> CommonResponse:
+    msg = Message(MessageType.STOP, "stop from API")
 
     cm = CommunicationHandler()
     cm.add_message(MessageSource.ServerManager, msg)
-    return "hope it works"
+    return CommonResponse(message="OK")
