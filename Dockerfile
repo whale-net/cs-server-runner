@@ -2,7 +2,7 @@
 # To Run: 
 #  docker volume create cs2
 #  docker build . -t cs2-manager
-#  docker run -it -e STEAM_USERNAME=YOUR_USERNAME -e STEAM_PASSWORD="YOUR_PASSWORD" -v "cs2:/cs2" cs2-manager
+#  docker run -it -p 5000:5000 -p 5001:5001 -e CS_PORT=5000 -e API_PORT=5001 -e STEAM_USERNAME=YOUR_USERNAME -e STEAM_PASSWORD="YOUR_PASSWORD" -v "cs2:/cs2" cs2-manager
 #
 #
 
