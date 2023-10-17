@@ -35,9 +35,10 @@ ENV API_PORT $API_PORT
 ENV STEAM_USERNAME $STEAM_USERNAME
 ENV STEAM_PASSWORD $STEAM_PASSWORD
 
-RUN chmod -R 777 /app
+RUN mkdir /cs2
 VOLUME /cs2
 
+RUN chmod -R 777 /app
 USER ${USER}
 
 CMD python3.11 -m cs2_server_management_service.service --cs_server_port $CS_PORT \
