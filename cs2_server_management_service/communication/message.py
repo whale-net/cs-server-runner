@@ -22,13 +22,13 @@ class Message(pydantic.BaseModel):
     message: str
 
 
-class CallbackMessge(Message):
-    """
-    unit of work with response and condition variable
-    """
+# class CallbackMessge(Message):
+#     """
+#     unit of work with response and condition variable
+#     """
 
-    model_config = pydantic.ConfigDict(arbitrary_types_allowed=True)
+#     model_config = pydantic.ConfigDict(arbitrary_types_allowed=True)
 
-    response: str
+#     response: str
 
-    _condition: threading.Condition = threading.Condition()
+#     _condition: threading.Condition = threading.Condition()
