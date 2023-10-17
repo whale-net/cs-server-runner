@@ -20,10 +20,10 @@ async def root() -> CommonResponse:
     """
     curl --request POST http://127.0.0.1:5000/server/shutdown
     """
-    msg = Message(MessageType.STOP, "stop from API")
+    msg = Message(message_type=MessageType.STOP, message="stop from API")
 
     cm = CommunicationHandler()
-    cm.add_message(MessageSource.ServerManager, msg)
+    cm.add_message(MessageSource.ServerManager, message=msg)
     return CommonResponse(message="OK")
 
 
@@ -32,7 +32,7 @@ async def root() -> CommonResponse:
     """
     curl --request POST http://127.0.0.1:5000/server/start
     """
-    msg = Message(MessageType.START, "starting server")
+    msg = Message(message_type=MessageType.START, message="starting server")
 
     cm = CommunicationHandler()
     cm.add_message(MessageSource.ServerManager, msg)

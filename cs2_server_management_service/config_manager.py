@@ -11,6 +11,7 @@ class ConfigManager:
     _instance: "ConfigManager" = None
 
     DEFAULT_CS_PORT: int = 27015
+    DEFAULT_API_PORT: int = 5000
     DEFAULT_ENVIRONMENT_FILE_NAME: str = "config.json"
     DEFAULT_STEAMCMD_EXECUTABLE: str = "steamcmd"
     DEFAULT_SERVER_INSTALL_DIRECTORY: str = os.path.join(os.getcwd(), "server_files")
@@ -26,6 +27,10 @@ class ConfigManager:
     @property
     def cs_server_port(self) -> int:
         return self._cs_server_port
+
+    @property
+    def api_port(self) -> int:
+        return self._api_port
 
     @property
     def steamcmd_executable(self) -> str:
@@ -87,6 +92,7 @@ class ConfigManager:
         self._instance._steam_username: str = str()
         self._instance._steam_password: str = str()
         self._instance._cs_server_port: int = ConfigManager.DEFAULT_CS_PORT
+        self._instance._api_port: int = ConfigManager.DEFAULT_API_PORT
         self._instance._steamcmd_executable: str = (
             ConfigManager.DEFAULT_STEAMCMD_EXECUTABLE
         )
@@ -116,6 +122,12 @@ class ConfigManager:
             self._steamcmd_executable = args.steamcmd
         self._skip_server_update = args.skip_server_update
 
+        if args.cs_server_port is not None:
+            self._cs_server_port = args.cs_server_port
+
+        if args.api_port is not None:
+            self._api_port = args.api_port
+
         if args.server_install_directory is not None:
             self._server_install_directory = args.server_install_directory
 
@@ -136,6 +148,24 @@ class ConfigManager:
             dest="steam_password",
             help="password used by steamcmd user",
             type=str,
+            nargs="?",
+            default=None,
+        )
+
+        parser.add_argument(
+            "--cs_server_port",
+            dest="cs_server_port",
+            help="port used by cs_server",
+            type=int,
+            nargs="?",
+            default=None,
+        )
+
+        parser.add_argument(
+            "--api_port",
+            dest="api_port",
+            help="port used by api",
+            type=int,
             nargs="?",
             default=None,
         )

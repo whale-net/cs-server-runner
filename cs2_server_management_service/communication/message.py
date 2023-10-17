@@ -1,6 +1,7 @@
 import enum
+import threading
 
-from dataclasses import dataclass
+import pydantic
 
 
 class MessageType(enum.Enum):
@@ -12,11 +13,22 @@ class MessageType(enum.Enum):
     HEALTH = 1000
 
 
-@dataclass
-class Message:
+class Message(pydantic.BaseModel):
     """
     unit of work for the server manager
     """
 
     message_type: MessageType
     message: str
+
+
+class CallbackMessge(Message):
+    """
+    unit of work with response and condition variable
+    """
+
+    model_config = pydantic.ConfigDict(arbitrary_types_allowed=True)
+
+    response: str
+
+    _condition: threading.Condition = threading.Condition()

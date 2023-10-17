@@ -107,7 +107,7 @@ class ServerManager:
 
     def run(self):
         # create server message
-        initial_create_message = Message(MessageType.START, "")
+        initial_create_message = Message(message_type=MessageType.START, message="")
         self._com_handler.add_message(
             ServerManager.MESSAGE_SOURCE, initial_create_message
         )

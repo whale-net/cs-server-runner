@@ -29,11 +29,11 @@ def run_api():
     logger.info("starting uvicorn")
     config = uvicorn.Config(
         "cs2_server_management_service.api:app",
-        port=5000,
+        port=ConfigManager().api_port,
         log_level="info",
         log_config="logging.ini",
         # use 127.0.0.1 for local development
-        host='0.0.0.0'
+        host="0.0.0.0",
     )
     server = uvicorn.Server(config)
     server.run()

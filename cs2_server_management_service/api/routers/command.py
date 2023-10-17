@@ -31,7 +31,7 @@ async def root(command: CommandRequest) -> CommonResponse:
     curl --header "Content-Type: application/json" --request POST --data '{"command":"sv_cheats 1"}' http://127.0.0.1:5000/server/command
     """
 
-    msg = Message(MessageType.COMMAND, command.command)
+    msg = Message(message_type=MessageType.COMMAND, message=command.command)
 
     cm = CommunicationHandler()
     cm.add_message(MessageSource.ServerManager, msg)
@@ -47,6 +47,6 @@ async def root(multi_command: MultiCommandRequest) -> CommonResponse:
     """
     cm = CommunicationHandler()
     for command in multi_command.commands:
-        msg = Message(MessageType.COMMAND, command.command)
+        msg = Message(message_type=MessageType.COMMAND, message=command.command)
         cm.add_message(MessageSource.ServerManager, msg)
     return CommonResponse(message="server should be executing many commands")

@@ -12,6 +12,7 @@ version = "0.0.1" # todo - use setuptools
 dependencies = [
     'fastapi',
     'uvicorn',
+    'pydantic'
 ]
 
 [project.optional-dependencies]
