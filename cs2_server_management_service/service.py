@@ -13,23 +13,24 @@ logger = logging.getLogger(__name__)
 def main():
     logger.info("starting service")
 
-    # init singleton classes to avoid anything weird
-    ConfigManager()
+    # init singleton class to avoid anything weird
     CommunicationHandler()
 
+    config_manager = ConfigManager()
+
     with NamedThreadPool() as threadpool:
-        threadpool.submit(run_api, "api")
-        threadpool.submit(run_cs_server_manager, "cs_server_manager")
+        threadpool.submit(run_api, "api", config_manager)
+        threadpool.submit(run_cs_server_manager, "cs_server_manager", config_manager)
 
     logger.info("service exiting")
 
 
-def run_api():
+def run_api(config_manager: ConfigManager):
     # this spawns a subprocess so the logging will be weird
     logger.info("starting uvicorn")
     config = uvicorn.Config(
         "cs2_server_management_service.api:app",
-        port=ConfigManager().api_port,
+        port=config_manager.api_port,
         log_level="info",
         log_config="logging.ini",
         # use 127.0.0.1 for local development
@@ -39,9 +40,12 @@ def run_api():
     server.run()
 
 
-def run_cs_server_manager():
+def run_cs_server_manager(config_manager: ConfigManager):
     logger.info("starting server manager")
     manager = ServerManager()
+
+    args = {}
+
     manager.run()
 
 

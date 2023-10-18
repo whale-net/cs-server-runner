@@ -20,22 +20,31 @@ logger = logging.getLogger(__name__)
 class ServerManager:
     MESSAGE_SOURCE: MessageSource = MessageSource.ServerManager
 
-    def __init__(self) -> None:
+    def __init__(
+        self, server_installation_path: str, update_server: bool = True
+    ) -> None:
         self._servers: list[CounterStrike2Server] = []
         self._do_shutdown: bool = False
 
         self._com_handler: CommunicationHandler = CommunicationHandler()
+
+        self._server_installation_path: str = server_installation_path
+        self._update_server: bool = update_server
 
         self._last_health_check: datetime.datetime = get_epoch()
         # make configurable?
         self._health_check_period: datetime.timedelta = datetime.timedelta(seconds=10)
         pass
 
+    @property
+    def server_installation_path(self) -> str:
+        return self._server_installation_path
+
     def process_message(self, message: Message) -> Response:
         logger.info("processing message %s", message)
         # route messages
         if message.message_type == MessageType.START:
-            self._create_server()
+            self._create_server(self._skip_update)
         elif message.message_type == MessageType.STOP:
             self._shutdown_server()
         elif message.message_type == MessageType.KILL:
@@ -51,13 +60,19 @@ class ServerManager:
             response="on it sir - o7",
         )
 
-    def _create_server(self):
+    def _create_server(self, update_server: bool = True):
         if len(self._servers) > 0:
             logger.warning("unable to start server, server already exists")
             return
 
         logger.info("creating cs2 server")
-        server = CounterStrike2Server()
+        from config_manager import ConfigManager
+
+        server = CounterStrike2Server(
+            port=ConfigManager().cs_server_port,
+            root_installation_path=self.server_installation_path,
+            update_server=update_server,
+        )
         server.start()
         self._servers.append(server)
         logger.info("cs2 server created")

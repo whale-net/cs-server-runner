@@ -3,7 +3,6 @@ import logging
 import subprocess
 import os
 
-from cs2_server_management_service.config_manager import ConfigManager
 from cs2_server_management_service.steamcmd import SteamCMD
 from cs2_server_management_service.util import get_epoch
 
@@ -19,16 +18,23 @@ class ServerNotStartedException(Exception):
 
 # TODO base class once this takes shape
 class CounterStrike2Server:
-    APP_ID = 730
+    STEAM_APP_ID = 730
+    DEFAULT_PORT: int = 27015
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        port: int = DEFAULT_PORT,
+        root_installation_path: str = ".",
+        update_server: bool = True,
+    ) -> None:
         self._last_update_run: datetime.datetime = get_epoch()
         self._last_run_start: datetime = get_epoch()
-        self._config_manager = ConfigManager()
-        self._installation_path = self._config_manager.get_game_install_path(self.name)
+        self._root_installation_path = root_installation_path
+        self._port = port
+        self._update_server = update_server
 
         self._executable_path = os.path.join(
-            self._installation_path, "game/bin/linuxsteamrt64/cs2"
+            self._root_installation_path, "game/bin/linuxsteamrt64/cs2"
         )
         pass
 
@@ -46,6 +52,10 @@ class CounterStrike2Server:
     @property
     def name(self) -> str:
         return "cs2"
+
+    @property
+    def port(self) -> int:
+        return self._port
 
     @property
     def _proc(self) -> subprocess.Popen:
@@ -82,7 +92,7 @@ class CounterStrike2Server:
         command: list[str] = [self._executable_path, "-dedicated"]
 
         command.append("-port")
-        command.append(str(self._config_manager.cs_server_port))
+        command.append(str(self.port))
 
         command.append("+map")
         command.append("de_ancient")
@@ -97,7 +107,7 @@ class CounterStrike2Server:
         has_update_ran = not self._last_update_run == get_epoch()
 
         if not has_update_ran:
-            if self._config_manager.skip_server_update:
+            if not self.update_server:
                 # set to an obviosuly faked non-epoch timestamp
                 self._last_update_run = datetime.datetime.utcfromtimestamp(1)
                 logger.info(
@@ -107,7 +117,7 @@ class CounterStrike2Server:
 
             logger.info("updating or installing server")
             steamcmd = SteamCMD()
-            steamcmd.update_or_install(CounterStrike2Server.APP_ID, self.name)
+            steamcmd.update_or_install(CounterStrike2Server.STEAM_APP_ID, self.name)
             self._last_update_run = datetime.datetime.now()
             logger.info("server updated/installed")
         else:

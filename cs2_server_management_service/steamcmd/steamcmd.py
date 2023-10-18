@@ -2,17 +2,30 @@ import logging
 import subprocess
 import os
 
-from cs2_server_management_service.config_manager import ConfigManager
-
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
 class SteamCMD:
-    def __init__(self) -> None:
-        self._config_manager: ConfigManager = ConfigManager()
-        self._steamcmd = self._config_manager.steamcmd_executable
-        logger.info(f"using steamcmd executable: {self._steamcmd}")
+    ANONYMOUS_USER: str = "anonymous"
+
+    def __init__(
+        self,
+        steamcmd_installation_root_path: str,
+        steamcmd_executable: str = "steamcmd",
+        steam_username=ANONYMOUS_USER,
+        steam_password: Optional[str] = None,
+    ) -> None:
+        self._steamcmd_executable = steamcmd_executable
+        self._steamcmd_installation_root_path = steamcmd_installation_root_path
+        self._steam_username = steam_username
+        self._steam_password = steam_password
+        logger.info(f"using steamcmd executable: {self._steamcmd_executable}")
+
+    @property
+    def steamcmd_installation_root_path(self) -> str:
+        return self._steamcmd_installation_root_path
 
     def update_or_install(self, app_id: int, installation_name: str):
         """
@@ -21,7 +34,7 @@ class SteamCMD:
 
         :param app_id: steam app_id
         """
-        install_dir = self._config_manager.get_game_install_path(installation_name)
+        install_dir = self.steamcmd_installation_root_path
         if not os.path.exists(install_dir):
             os.makedirs(install_dir)
 
@@ -33,9 +46,9 @@ class SteamCMD:
         steamcmd_args.append(install_dir)
 
         steamcmd_args.append("+login")
-        steamcmd_args.append(self._config_manager.steam_username)
+        steamcmd_args.append(self._steam_username)
         # password must run via stdin
-        stdin_args.append(self._config_manager.steam_password)
+        stdin_args.append(self._steam_password)
 
         steamcmd_args.append("+app_update")
         steamcmd_args.append(str(app_id))
@@ -46,7 +59,7 @@ class SteamCMD:
         self._exec(steamcmd_args, stdin_args)
 
     def _exec(self, command_args: list[str], stdin_args: list[str]):
-        subprocess_command = [self._config_manager.steamcmd_executable]
+        subprocess_command = [self._steamcmd_executable]
         subprocess_command += command_args
 
         pretty_subprocess_command = " ".join(subprocess_command)
