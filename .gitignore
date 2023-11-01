@@ -34,3 +34,6 @@ server_files/*
 
 # ignore log files
 *.log
+
+# ignore start commands
+start*.sh
