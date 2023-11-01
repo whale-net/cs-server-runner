@@ -134,7 +134,7 @@ class ServerManager:
             # submit health_check if it's been too long
             if current_time - self._last_health_check > self._health_check_period:
                 health_message = Message(
-                    MessageType.HEALTH, f"health_check:{current_time}"
+                    message_type=MessageType.HEALTH, message=f"health_check:{current_time}"
                 )
                 self._com_handler.add_message(
                     ServerManager.MESSAGE_SOURCE, health_message
